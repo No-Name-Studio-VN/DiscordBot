@@ -1,6 +1,6 @@
-var request = require("request");
-var AuthDetails = require("../../auth.js").getAuthDetails();
-var Discord = require("discord.js");
+let request = require("request");
+let AuthDetails = require("../../auth.js").getAuthDetails();
+let Discord = require("discord.js");
 
 exports.commands = [
     "twitch_user",
@@ -39,19 +39,19 @@ exports.twitch_user = {
                 }
             },
             function(err,res,body){
-                var stream = JSON.parse(body);
+                let stream = JSON.parse(body);
                 console.log(stream);
                 if(stream.data.length > 0){
                     for(result of stream.data){
-                        msg.channel.send("", {
-                            embed: {
+                        msg.channel.send({
+                            embeds: [{
                                 color: 0x4b367c,
                                 author: {
                                     name: result.display_name,
                                     icon_url: result.profile_image_url
                                 },
                                 description: result.description
-                            }
+                            }]
                         });
                     }
                 } else {
@@ -112,13 +112,13 @@ exports.twitch = {
                 
                 function(err,res,body){
                     let content = JSON.parse(body);
-                    var streams = [];
+                    let streams = [];
                     if(content && content.data && content.data.length > 0){
                         streams = content.data;
                     }
                     for(stream of streams){
-                        var image = stream.thumbnail_url.replace("{width}","1920").replace("{height}","1080");
-                        var status_line;
+                        let image = stream.thumbnail_url.replace("{width}","1920").replace("{height}","1080");
+                        let status_line;
                         if(stream.type == "live"){
                             status_line = " is live!";
                         } else if(stream.type == "vodcast"){
@@ -129,14 +129,14 @@ exports.twitch = {
                         }
                         let user = usermap[stream.user_id];
                         delete usermap[stream.user_id];
-                        var title;
+                        let title;
                         if(stream.title && stream.title.length > 0){
                             title = stream.title;
                         } else {
                             title = "Stream is Live!";
                         }
-                        msg.channel.send("",{
-                            embed: {
+                        msg.channel.send({
+                            embeds: [{
                                 color: 0x4b367c,
                                 author: {
                                     name: user.display_name + status_line
@@ -153,13 +153,13 @@ exports.twitch = {
                                     "icon_url": "https://media.forgecdn.net/attachments/214/576/twitch.png",
                                     "text": stream.viewer_count + " viewers"
                                 }
-                            }
+                            }]
                         });
                     }
                     for(userid in usermap){
                         let user = usermap[userid];
-                        msg.channel.send("",{
-                            embed: {
+                        msg.channel.send({
+                            embeds: [{
                                 color: 0x4b367c,
                                 author: {
                                     name: user.display_name + " is offline"
@@ -173,7 +173,7 @@ exports.twitch = {
                                 "image": {
                                     url: user.offline_image_url
                                 }
-                            }
+                            }]
                         });
                     }
                 });
